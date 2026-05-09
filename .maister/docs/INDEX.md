@@ -70,10 +70,10 @@ AWS service usage conventions, configuration management via environment variable
 Maven build configuration, plugin management, enforcer rules (banned dependencies, Java version), build lifecycle conventions, and CI integration.
 
 #### Docker Standards (`standards/backend/docker.md`)
-Base image selection (eclipse-temurin:21-jre), Dockerfile structure, image layering, and container configuration conventions.
+Base image selection (eclipse-temurin JRE, Debian-based), non-root user setup (spring:spring), installing curl via apt-get before switching user (JRE images omit curl), Docker HEALTHCHECK via Spring Boot Actuator, and separate R2DBC/JDBC URL schemes for R2DBC and Flyway to avoid startup failures.
 
 #### Local Development Standards (`standards/backend/local-dev.md`)
-Local environment setup, Docker Compose usage, environment variable configuration, database seeding, and developer workflow conventions.
+Local environment setup, Docker Compose usage, environment variable configuration (.env from .env.example), Colima writable mount requirement, init scripts baked into Docker image, port conventions, DynamoDB/SQS naming, stack reset with `docker compose down -v`, startup sequence verification, and multi-instance scaling via nginx load balancer (no fixed ports on scaled service).
 
 #### Logging Standards (`standards/backend/logging.md`)
 Log level usage (DEBUG/INFO/WARN/ERROR), structured logging fields, avoiding sensitive data in logs, correlation ID propagation, and log format conventions.
@@ -106,7 +106,7 @@ Located in `.maister/docs/standards/testing/`
 80% minimum instruction and branch coverage gate (haltOnFailure), jacoco-maven-plugin configuration, GitLab CI integration via JACOCO_MINIMUM_COVERAGE env var, and coverage exclusion rules.
 
 #### JUnit Patterns (`standards/testing/junit-patterns.md`)
-Given-When-Then comment structure in all test methods, test class/method naming, use of @ExtendWith(MockitoExtension.class), Mockito stubbing conventions, and assertion style.
+Given-When-Then comment structure in all test methods, test class/method naming (`method_shouldBehavior`), use of @ExtendWith(MockitoExtension.class), Mockito stubbing conventions (argThat null-safety), unit vs IT naming contract (FooTest → Surefire, FooIT → Failsafe), @SpringBootTest + @Testcontainers + @ServiceConnection pattern for integration tests, StepVerifier for reactive Mono/Flux assertions (no .block()), WebTestClient-only policy for controller slice tests (no MockMvc), AssertJ assertThat exclusively (no JUnit assertEquals/assertTrue), JVM argLine configuration for Mockito on Java 25 (preserving @{argLine} for JaCoCo), and test compilation target Java 21 (maven.compiler.testRelease=21) to avoid ASM parse errors in slice test contexts.
 
 #### Test Writing (`standards/testing/test-writing.md`)
 Test behavior over implementation, one assertion per concept, test isolation, avoid testing private methods, and meaningful test naming that describes the scenario.

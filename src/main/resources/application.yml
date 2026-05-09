@@ -1,0 +1,38 @@
+spring:
+  r2dbc:
+    url: ${SPRING_R2DBC_URL:r2dbc:postgresql://localhost:5432/testCouponDB}
+    username: ${SPRING_R2DBC_USERNAME}
+    password: ${SPRING_R2DBC_PASSWORD}
+    pool:
+      initial-size: ${R2DBC_POOL_INITIAL_SIZE:2}
+      max-size: ${R2DBC_POOL_MAX_SIZE:10}
+  flyway:
+    url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/testCouponDB}
+    user: ${SPRING_R2DBC_USERNAME}
+    password: ${SPRING_R2DBC_PASSWORD}
+    locations: classpath:db/migration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+server:
+  shutdown: graceful
+
+geo:
+  base-url: ${GEO_BASE_URL:http://ip-api.com}
+  connect-timeout-seconds: ${GEO_CONNECT_TIMEOUT:2}
+  read-timeout-seconds: ${GEO_READ_TIMEOUT:3}
+  # Number of trusted reverse proxy hops in front of this service.
+  # Set to the number of load balancers/proxies that append to X-Forwarded-For.
+  trusted-proxy-hops: ${GEO_TRUSTED_PROXY_HOPS:1}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

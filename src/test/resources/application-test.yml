@@ -1,0 +1,9 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/couponservice_test
+    username: test
+    password: test
+  flyway:
+    url: jdbc:postgresql://localhost:5432/couponservice_test
+    username: test
+    password: test

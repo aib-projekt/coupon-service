@@ -77,3 +77,43 @@ If `init-service` fails, force recreate it:
 ```bash
 docker compose up init-service --force-recreate
 ```
+
+### Multi-Instance Scaling with Docker Compose
+To scale a service to multiple instances using `docker compose up --scale app=N`, the scaled service must not have a fixed `ports:` mapping (Docker cannot bind the same host port to multiple containers). Instead, add an nginx service as a load balancer:
+
+```yaml
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+
+  app:
+    # No ports: section — nginx handles routing
+    image: my-service:latest
+```
+
+```nginx
+# nginx.conf
+events {}
+http {
+  upstream app {
+    server app:8080;  # Docker resolves all replicas by service name
+  }
+  server {
+    listen 80;
+    location / { proxy_pass http://app; }
+  }
+}
+```
+
+Start with multiple instances:
+```bash
+docker compose up -d --scale app=4
+```
+
+The nginx healthcheck should check itself (`localhost:80`), not the upstream `app` service. The app healthcheck must target `localhost:8080` (Spring Boot port), not port 80 (nginx port).
