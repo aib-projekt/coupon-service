@@ -1,0 +1,95 @@
+orchestrator:
+  started_phase: "Phase 1: Analyze codebase & clarify requirements"
+  completed_phases: ["Phase 1: Analyze codebase & clarify requirements", "Phase 2: Analyze gaps & clarify scope", "Phase 5: Gather requirements & create specification", "Phase 6: Audit specification", "Phase 7: Plan implementation", "Phase 8: Execute implementation", "Phase 10: Prompt verification options", "Phase 11: Verify implementation & resolve issues"]
+  failed_phases: []
+  auto_fix_attempts: {}
+  options:
+    spec_audit_enabled: true
+    skip_test_suite: true
+    e2e_enabled: false         # pure REST API, no browser UI
+    user_docs_enabled: false   # no user-facing UI
+    code_review_enabled: true
+    pragmatic_review_enabled: true
+    reality_check_enabled: true
+    production_check_enabled: true
+  created: "2026-05-08T00:00:00Z"
+  updated: "2026-05-08T00:00:00Z"
+  task_path: ".maister/tasks/development/2026-05-08-coupon-service"
+  task_ids: {}
+
+task:
+  title: "Coupon Service REST API Implementation"
+  description: "Implement a production-ready REST API for coupon lifecycle management using Spring Boot 3 + WebFlux, PostgreSQL + Spring Data R2DBC, Flyway migrations, atomic SQL concurrency, ip-api.com geolocation (fail closed), and configurable per-user single-use enforcement. Three endpoints: POST /api/v1/coupons, GET /api/v1/coupons/{code}, POST /api/v1/coupons/{code}/redeem."
+  status: "in_progress"
+  tags: ["java", "spring-boot", "webflux", "r2dbc", "postgresql", "recruitment"]
+  priority: "high"
+
+task_context:
+  risk_level: medium
+  clarifications_resolved: null
+  scope_expanded: null
+  architecture_decision: "Spring Boot 3 + WebFlux + PostgreSQL R2DBC + Flyway + ip-api.com"
+  task_characteristics:
+    has_reproducible_defect: false
+    modifies_existing_code: false
+    creates_new_entities: true
+    involves_data_operations: true
+    ui_heavy: false
+  research_reference:
+    path: ".maister/tasks/product-design/2026-05-08-coupon-service"
+    research_question: "How to design and implement a production-ready coupon management REST service?"
+    research_type: "product-design"
+    confidence_level: "high"
+  project_context:
+    project_doc_paths:
+      - ".maister/docs/project/tech-stack.md"
+      - ".maister/docs/project/architecture.md"
+    product_design_artifacts:
+      - ".maister/tasks/product-design/2026-05-08-coupon-service/outputs/product-brief.md"
+      - ".maister/tasks/product-design/2026-05-08-coupon-service/analysis/feature-spec.md"
+      - ".maister/tasks/product-design/2026-05-08-coupon-service/analysis/design-decisions.md"
+  phase_summaries:
+    research:
+      summary: "Full product design completed. Spring Boot 3 + WebFlux chosen. Atomic SQL UPDATE for concurrency. ip-api.com for geolocation behind GeoLocationService interface. 7-section implementation-ready feature spec produced."
+      key_findings:
+        - "Atomic SQL UPDATE (current_uses < max_uses) for strict usage cap enforcement"
+        - "X-Forwarded-For header for end-user IP; fail closed on geo failure"
+        - "perUserLimit flag on Coupon; UNIQUE(coupon_code, user_id) constraint as safety net"
+        - "Minimal transaction scope: only covers atomic UPDATE + optional coupon_usages INSERT"
+        - "GeoLocationService interface for provider swappability"
+      recommended_approach: "Spring Boot 3 WebFlux + Spring Data R2DBC + Flyway + ip-api.com"
+    codebase_analysis: {key_files: [], primary_language: null, summary: null}
+    clarifications: []
+    gap_analysis:
+      summary: "Full greenfield implementation needed. 25+ files to create across API/application/domain/infrastructure layers. Risk medium: Flyway+R2DBC JDBC coexistence, reactive @Transactional scoping, and atomicIncrementUsage row-count disambiguation require careful implementation."
+      integration_points:
+        - "Spring Data R2DBC + Flyway (JDBC) dual driver coexistence in pom.xml and application.yml"
+        - "Reactive @Transactional with context propagation on CouponService"
+        - "Atomic UPDATE row-count check + discriminating coupon-not-found vs cap-exhausted"
+        - "DataIntegrityViolationException constraint name matching for ALREADY_USED detection"
+    scope_clarifications:
+      scope_expanded: false
+      summary: "All 4 important decisions confirmed with recommended defaults: named DB constraint, IpAddressExtractor class, split Geo/WebClient configs, minimal OpenAPI annotations."
+    ui_mockups: {components_designed: [], summary: null}
+    specification:
+      summary: "Comprehensive implementation spec produced from 7-section approved feature-spec. 27 new components, 7 test groups, all 4 gap-analysis decisions incorporated. Covers pom.xml, all Java sources, Flyway SQL, YAML config, Docker, and full test suite."
+    architecture_decision: {decision: "Spring Boot 3 + WebFlux + R2DBC + Flyway", summary: null}
+
+verification_context:
+  last_status: "passed_with_issues_fixed"
+  issues_found:
+    - CRIT-1: X-Forwarded-For spoofing (configurable trusted-proxy-hops added)
+    - CRIT-2: remainingUses stale snapshot (RETURNING clause, fresh DB value)
+    - CRIT-3: Per-user check outside transaction (pre-check removed, DB constraint authoritative)
+    - WARN-1: show-details always (changed to never)
+    - WARN-2: userId no length validation (@Size(max=255) added)
+    - WARN-3: code path variable no validation (@Pattern + @Validated added)
+    - WARN-4: connectTimeout not wired (ReactorClientHttpConnector + ChannelOption added)
+    - WARN-5: log.error for business errors (WARN for 4xx, ERROR for 5xx only)
+    - WARN-6: graceful shutdown not configured (server.shutdown=graceful added)
+    - INFO: WebClientConfig redundant (deleted)
+    - INFO: JaCoCo excluded entire domain/ (restricted to Coupon.class + CouponUsage.class)
+    - INFO: ReactiveTransactionConfig comment added
+  fixes_applied: ["All selected issues resolved in single iteration"]
+  decisions_made: ["trusted-proxy-hops default=1", "RETURNING clause replaces rowsUpdated check"]
+  reverify_count: 1

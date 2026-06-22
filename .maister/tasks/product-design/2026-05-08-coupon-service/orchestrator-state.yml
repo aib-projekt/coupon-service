@@ -1,0 +1,80 @@
+orchestrator:
+  started_phase: "Phase 0: Initialize, gather context & detect characteristics"
+  completed_phases: []
+  failed_phases: []
+  auto_fix_attempts: {}
+  options:
+    visual_enabled: false  # is_ui_focused = false, no visual prototyping needed
+  created: "2026-05-08T00:00:00Z"
+  updated: "2026-05-08T00:00:00Z"
+  task_path: ".maister/tasks/product-design/2026-05-08-coupon-service"
+  task_ids: {}
+
+task:
+  title: "Coupon Service REST API Design"
+  description: "Design a production-ready REST API for managing discount coupons. Requirements: coupon creation (code, dates, max uses, country), coupon usage registration with country-based restrictions (IP geolocation), case-insensitive unique codes, first-come-first-served limits, optional per-user single-use enforcement. Must be scalable, thread-safe, backed by a database."
+  status: "in_progress"
+  tags: ["recruitment", "backend", "rest-api", "java"]
+  priority: "high"
+
+design_context:
+  design_characteristics:
+    is_greenfield: true
+    is_enhancement: false
+    is_ui_focused: false
+    is_backend: true
+    is_complex: true
+    is_simple: false
+  complexity_level: "complex"
+  collected_urls: []
+  research_topics: []
+  user_files_list: []
+  source_research_file: ".maister/tasks/reaserch/coupon-servcie.md"
+  project_doc_paths:
+    - ".maister/docs/project/tech-stack.md"
+    - ".maister/docs/project/architecture.md"
+  project_context_summary: "Java 25 Maven backend microservice skeleton. Spring Boot recommended (not yet configured). No source files yet. Layered REST architecture planned: API / Service / Domain / Persistence."
+  refinement_iterations:
+    phase_2: 0
+    phase_3: 0
+    phase_5: 0
+    phase_6_sections: {}
+    phase_7: 0
+  visual_companion:
+    available: false
+    port: null
+    pid: null
+    fallback_to_ascii: false
+  research_reference:
+    path: ".maister/tasks/reaserch/coupon-servcie.md"
+    research_question: "How to design a production-ready coupon management REST service?"
+  phase_summaries:
+    context_synthesis:
+      summary: null
+      sources_count: 0
+    problem_exploration:
+      problem_statement: null
+      constraints: []
+      success_criteria: []
+    persona_exploration:
+      personas: []
+      user_journeys: []
+    idea_generation:
+      alternatives_count: 0
+      summary: null
+    idea_convergence:
+      selected_approach: null
+      trade_offs_accepted: []
+      key_decisions: []
+    feature_specification:
+      spec_sections: {}
+      sections_count: 0
+    visual_prototyping:
+      mockup_references: []
+      summary: null
+    review_handoff:
+      brief_layers: []
+      summary: null
+
+options:
+  visual_enabled: false
