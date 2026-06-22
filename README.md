@@ -1,6 +1,7 @@
 # Coupon Service
 
 REST API for discount coupon lifecycle management — creation, retrieval, and atomic redemption with IP-based country restriction.
+Implementation of a recruitment task whose requirements are part of the maister's analysis: [coupon-service.md](.maister/tasks/product-design/2026-05-08-coupon-service/context/coupon-servcie.md)
 
 ## Tech Stack
 
